@@ -1163,13 +1163,54 @@
         });
 
         // ===== FORM SUBMISSION =====
-        function submitForm(event, formId, successId) {
-            event.preventDefault();
-            const successMsg = document.getElementById(successId);
-            successMsg.style.display = 'block';
-            document.getElementById(formId).reset();
-            setTimeout(() => successMsg.style.display = 'none', 5000);
-        }
+function submitForm(event, formId, successId) {
+    event.preventDefault();
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input, select, textarea');
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB');
+
+    if (formId === 'admissionForm') {
+        const admission = {
+            id: Date.now(),
+            firstName: inputs[0].value,
+            lastName: inputs[1].value,
+            dob: inputs[2].value,
+            gender: inputs[3].value,
+            class: inputs[4].value,
+            parentName: inputs[5].value,
+            phone: inputs[6].value,
+            email: inputs[7].value,
+            prevSchool: inputs[8].value || 'None',
+            status: 'pending',
+            date: dateStr
+        };
+        const admissions = JSON.parse(localStorage.getItem('schoolAdmissions') || '[]');
+        admissions.push(admission);
+        localStorage.setItem('schoolAdmissions', JSON.stringify(admissions));
+    }
+
+    if (formId === 'contactForm') {
+        const message = {
+            id: Date.now(),
+            name: inputs[0].value,
+            phone: inputs[1].value,
+            email: inputs[2].value,
+            subject: inputs[3].value,
+            message: inputs[4].value,
+            status: 'new',
+            date: dateStr
+        };
+        const messages = JSON.parse(localStorage.getItem('schoolMessages') || '[]');
+        messages.push(message);
+        localStorage.setItem('schoolMessages', JSON.stringify(messages));
+    }
+
+    const successMsg = document.getElementById(successId);
+    successMsg.style.display = 'block';
+    form.reset();
+    setTimeout(() => successMsg.style.display = 'none', 5000);
+}
 
         // ===== SCROLL ANIMATIONS =====
         const animateElements = document.querySelectorAll('.program-card, .feature-card, .testimonial-card, .event-card, .step, .contact-card');
